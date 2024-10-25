@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/mvc
+           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <import resource="classpath:config.xml"/>
+
+    <!-- URL Handler Mapping -->
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <props>
+                <prop key="/users">userController</prop>
+                <prop key="/users/new">userController</prop>
+                <prop key="/users/*/edit">userController</prop>
+                <prop key="/users/*/delete">userController</prop>
+                <prop key="/users/search">userController</prop>
+                <prop key="/users/*">userController</prop>
+            </props>
+        </property>
+        <property name="alwaysUseFullPath" value="true"/>
+    </bean>
+
+    <!-- Handler Adapter -->
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+
+    <!-- Controllers -->
+    <bean id="userController" class="ma.hmzelidrissi.controllers.UserController">
+        <property name="userService" ref="userService"/>
+    </bean>
+
+    <!-- Thymeleaf Configuration -->
+    <bean id="templateResolver" class="org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver">
+        <property name="prefix" value="/WEB-INF/templates/"/>
+        <property name="suffix" value=".html"/>
+        <property name="templateMode" value="HTML"/>
+        <property name="characterEncoding" value="UTF-8"/>
+        <property name="cacheable" value="false"/>
+    </bean>
+
+    <bean id="templateEngine" class="org.thymeleaf.spring6.SpringTemplateEngine">
+        <property name="templateResolver" ref="templateResolver"/>
+        <property name="enableSpringELCompiler" value="true"/>
+    </bean>
+
+    <bean class="org.thymeleaf.spring6.view.ThymeleafViewResolver">
+        <property name="templateEngine" ref="templateEngine"/>
+        <property name="characterEncoding" value="UTF-8"/>
+        <property name="order" value="1"/>
+    </bean>
+</beans>
